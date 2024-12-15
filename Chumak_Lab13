@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <windows.h>
+
+using namespace std;
+
+class Product
+{
+protected:
+    string name;
+    double price;
+
+public:
+    Product(const string& name, double price) : name(name), price(price) {}
+    virtual ~Product() = default;
+
+    string getName() const 
+    { 
+        return name; 
+    }
+    double getPrice() const
+    {
+        return price; 
+    }
+    virtual double getFinalPrice() const = 0;
+};
+
+class Book : public Product 
+{
+public:
+    Book(const string& name, double price) : Product(name, price) {}
+
+    double getFinalPrice() const override 
+    {
+        return price * 0.9;
+    }
+};
+
+class Pen : public Product
+{
+public:
+    Pen(const string& name, double price) : Product(name, price) {}
+
+    double getFinalPrice() const override 
+    {
+        return price > 5 ? price - 5 : price;
+    }
+};
+
+int main() 
+{
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+    vector<Product*> products;
+
+    products.push_back(new Book("Book A", 100));
+    products.push_back(new Book("Book B", 200));
+    products.push_back(new Pen("Pen A", 10));
+    products.push_back(new Pen("Pen B", 4));
+
+    for (auto product : products) 
+    {
+        cout << "Product: " << product->getName() << endl;
+        cout << "Base Price: " << product->getPrice() << " грн" << endl;
+        cout << "Final Price: " << product->getFinalPrice() << " грн" << endl;
+        cout << "-------------------------" << endl;
+
+        delete product;
+    }
+    return 0;
+}
